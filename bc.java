@@ -55,3 +55,12 @@ public class HelloWorld {
         System.out.println("Hello, World!"); 
     }
 }
+
+StringBuilder query = new StringBuilder();
+query.append( "select * from user u where u.name in (?)" );
+try {
+	Connection connection = getConnection();
+    PreparedStatement statement = connection.prepareCall(query.toString());
+    statement.setString( 1, namesString );
+    resultSet = statement.execute();
+}
