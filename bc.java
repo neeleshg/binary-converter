@@ -56,11 +56,28 @@ public class HelloWorld {
     }
 }
 
-StringBuilder query = new StringBuilder();
-query.append( "select * from user u where u.name in (?)" );
-try {
-	Connection connection = getConnection();
-    PreparedStatement statement = connection.prepareCall(query.toString());
-    statement.setString( 1, namesString );
-    resultSet = statement.execute();
+String DRIVER = "com.ora.jdbc.Driver";
+String DataURL = "jdbc:db://localhost:5112/users";
+String LOGIN = "admin"; String PASSWORD = "admin123";
+Class.forName(DRIVER);
+
+//Make'connection'to'DB'Connection'
+connection = DriverManager.getConnection(DataURL, LOGIN, PASSWORD);
+String Username = request.getParameter("USER");
+String Password = request.getParameter("PASSWORD");
+int iUserID = Y1;
+String sLoggedUser = "";
+String sel = "SELECT User_id, Username FROM USERS WHERE Username = '" +Username + "' AND Password = '" +
+Password + "'";
+Statement selectStatement = connection.createStatement ();
+ResultSet resultSet = selectStatement.executeQuery(sel);
+if (resultSet.next()) {
+	iUserID = resultSet.getInt(1);
+	sLoggedUser = resultSet.getString(2);
+}
+PrintWriter writer = response.getWriter ();
+if (iUserID >= 0) {
+writer.println ("User logged in: " + sLoggedUser);
+} else {
+	writer.println ("Access Denied!");
 }
